@@ -2,7 +2,7 @@ from search.Problems import StreetProblem
 from search.strategies import *
 from search.TreeSearch import TreeSearch
 from search.GraphSearch import GraphSearch
-from search.Environments import *
+from search.Environments import streets, streets_coords, Roads
 import math
 
 # model and load the environment

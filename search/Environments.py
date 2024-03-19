@@ -1,4 +1,5 @@
 import math
+import numpy as np
 
 streets = {
     'Andria': ['Corato', 'Trani'],
@@ -43,3 +44,18 @@ class Roads:
         lat_diff = abs(lat_a - lat_b)*111  # <- *111 to just convert the latitude distance in KM.
         long_diff = abs(long_a - long_b)*111 # <- *111 to just convert the longitude distance in KM.
         return math.sqrt(lat_diff**2 + long_diff**2)
+
+
+class Maze:
+    def __init__(self, M, N, K, V):
+        self.width = N
+        self.height = M
+        self.n_walls = K
+        self.p_walls = V
+
+    def create_environment(self):
+        maze = np.ones((self.height, self.width), dtype=int)  # <- 1: reachable element
+        for i in range(self.n_walls):
+            maze[self.p_walls[i][0]][self.p_walls[i][1]] = 2  # <- 2: unreachable element
+
+        return maze

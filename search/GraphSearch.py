@@ -51,4 +51,6 @@ class GraphSearch:
 
             # Check if the search fails (empty fringe)
             if len(self.fringe) == 0:
+                if self.problem.goal_test(node.state):
+                    return 'Ok', node
                 return 'Fail', []
