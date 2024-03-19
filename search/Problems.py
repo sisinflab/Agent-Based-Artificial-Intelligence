@@ -53,9 +53,6 @@ class StreetProblem:
         return self.environment.distance(state, reached_state)
 
     def h(self, state):
-        # goal_x, goal_y = self.environment.coordinates[self.goal_state]
-        # x, y = self.environment.coordinates[state]
-        # return math.sqrt((goal_x - x) ** 2 + (goal_y - y) ** 2)
         lat_a, long_a = self.environment.coordinates[state]
         lat_b, long_b = self.environment.coordinates[self.goal_state]
         lat_diff = abs(lat_a - lat_b) * 111  # <- *111 to just convert the latitude distance in KM.
