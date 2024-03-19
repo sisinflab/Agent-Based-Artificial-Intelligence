@@ -60,3 +60,32 @@ class DepthLimitedSearch:
         node = fringe.pop()
         return fringe, node
 
+
+class Greedy:
+    def __init__(self, problem):
+        self.problem = problem
+
+    def __repr__(self):
+        return 'Greedy strategy'
+
+    def select(self, fringe, new_nodes):
+        fringe = fringe + new_nodes
+        # sort fringe following the evaluation function
+        fringe = sorted(fringe, key=lambda x: self.problem.h(x.state))
+        node = fringe.pop(0)
+        return fringe, node
+
+
+class AStar:
+    def __init__(self, problem):
+        self.problem = problem
+
+    def __repr__(self):
+        return 'AStar strategy'
+
+    def select(self, fringe, new_nodes):
+        fringe = fringe + new_nodes
+        # sort fringe following the evaluation function
+        fringe = sorted(fringe, key=lambda x: (self.problem.h(x.state)+x.cost))
+        node = fringe.pop(0)
+        return fringe, node

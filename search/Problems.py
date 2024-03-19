@@ -1,9 +1,12 @@
+import math
+
+
 class StreetProblem:
 
     def __init__(self, initial_state, goal_state, environment):
-        self.initial_state = initial_state  # the initial state of the agent
-        self.goal_state = goal_state  # the goal state of the agent
-        self.environment = environment  # the state space
+        self.initial_state = initial_state
+        self.goal_state = goal_state
+        self.environment = environment
 
     def successors(self, state):
         """
@@ -20,7 +23,7 @@ class StreetProblem:
         :param state: actual state
         :return: a list of actions
         """
-        return self.environment[state]
+        return self.environment.streets[state]
 
     def result(self, state=None, action=None):
         """
@@ -46,4 +49,15 @@ class StreetProblem:
         :param action: an action
         :return: the cost of doing that action in that state
         """
-        return 1
+        reached_state = self.result(state, action)
+        return self.environment.distance(state, reached_state)
+
+    def h(self, state):
+        # goal_x, goal_y = self.environment.coordinates[self.goal_state]
+        # x, y = self.environment.coordinates[state]
+        # return math.sqrt((goal_x - x) ** 2 + (goal_y - y) ** 2)
+        lat_a, long_a = self.environment.coordinates[state]
+        lat_b, long_b = self.environment.coordinates[self.goal_state]
+        lat_diff = abs(lat_a - lat_b) * 111  # <- *111 to just convert the latitude distance in KM.
+        long_diff = abs(long_a - long_b) * 111  # <- *111 to just convert the longitude distance in KM.
+        return math.sqrt(lat_diff ** 2 + long_diff ** 2)

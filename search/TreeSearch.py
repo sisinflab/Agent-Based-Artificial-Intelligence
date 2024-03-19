@@ -1,7 +1,7 @@
-from src.Node import Node
+from search.Node import Node
 
 
-class GraphSearch:
+class TreeSearch:
     """
     A class able to find a solution with a given search strategy
     """
@@ -10,10 +10,9 @@ class GraphSearch:
         self.problem = problem
         self.strategy = strategy
         self.fringe = []
-        self.visited = set()  # <- The set containing the visited states
 
     def __repr__(self):
-        return 'Graph Search'
+        return 'Tree Search'
 
     def run(self):
         """
@@ -31,20 +30,13 @@ class GraphSearch:
         while True:
             # check if the node passes the goal test
             if self.problem.goal_test(node.state):
-                return 'Ok', node.path()
-
-            # add visited for the graph search
-            self.visited.add(node.state)
+                return 'Ok', node
 
             # expand the node
             new_states = self.problem.successors(node.state)
             new_nodes = [node.expand(state=s,
                                      action=a,
-                                     cost=1) for s, a in new_states]
-
-            # we retain the states not already visited!
-            new_nodes = [n for n in new_nodes if n.state not in self.visited]
-            self.fringe = [n for n in self.fringe if n.state not in self.visited]
+                                     cost=self.problem.cost(node.state, a)) for s, a in new_states]
 
             # a solution was not found, update the fringe and pick the next node coherently with the search strategy
             self.fringe, node = self.strategy.select(self.fringe, new_nodes)
