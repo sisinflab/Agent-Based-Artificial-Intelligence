@@ -6,8 +6,7 @@ class Random:
         return 'Random strategy'
 
     @staticmethod
-    def select(fringe, new_nodes):
-        fringe = fringe + new_nodes
+    def select(fringe):
         random.shuffle(fringe)
         node = fringe.pop(0)
         return fringe, node
@@ -18,8 +17,7 @@ class BreadthFirst:
         return 'Breadth First strategy'
 
     @staticmethod
-    def select(fringe, new_nodes):
-        fringe = fringe + new_nodes
+    def select(fringe):
         node = fringe.pop(0)
         return fringe, node
 
@@ -29,8 +27,7 @@ class DepthFirst:
         return 'Depth First strategy'
 
     @staticmethod
-    def select(fringe, new_nodes):
-        fringe = fringe + new_nodes
+    def select(fringe):
         node = fringe.pop()
         return fringe, node
 
@@ -40,8 +37,7 @@ class UniformCost:
         return 'Uniform Cost strategy'
 
     @staticmethod
-    def select(fringe, new_nodes):
-        fringe = fringe + new_nodes
+    def select(fringe):
         fringe = sorted(fringe, key=lambda x: x.cost)
         node = fringe.pop(0)
         return fringe, node
@@ -54,10 +50,12 @@ class DepthLimitedSearch:
     def __repr__(self):
         return 'Depth First Limited strategy'
 
-    def select(self, fringe, new_nodes):
-        fringe = fringe + new_nodes
+    def select(self, fringe):
         fringe = [n for n in fringe if n.depth <= self.limit]
-        node = fringe.pop()
+        try:
+            node = fringe.pop()
+        except IndexError:
+            return [], None
         return fringe, node
 
 
@@ -68,8 +66,7 @@ class Greedy:
     def __repr__(self):
         return 'Greedy strategy'
 
-    def select(self, fringe, new_nodes):
-        fringe = fringe + new_nodes
+    def select(self, fringe):
         # sort fringe following the evaluation function
         fringe = sorted(fringe, key=lambda x: self.problem.h(x.state))
         node = fringe.pop(0)
@@ -83,8 +80,7 @@ class AStar:
     def __repr__(self):
         return 'AStar strategy'
 
-    def select(self, fringe, new_nodes):
-        fringe = fringe + new_nodes
+    def select(self, fringe):
         # sort fringe following the evaluation function
         fringe = sorted(fringe, key=lambda x: (self.problem.h(x.state)+x.cost))
         node = fringe.pop(0)

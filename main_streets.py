@@ -9,7 +9,7 @@ import math
 
 map = Roads(streets, streets_coords)
 # formulate the problem
-initial_state = 'Ruvo'
+initial_state = 'Andria'
 goal_state = 'Bari'
 map_problem = StreetProblem(environment=map,
                       initial_state=initial_state,
@@ -17,7 +17,8 @@ map_problem = StreetProblem(environment=map,
 
 # search strategy (for the search tree, we do not include DepthFirst because it will cause infinite loop.
 # You can try by yourself)
-strategies = [AStar(map_problem), Greedy(map_problem), Random(), BreadthFirst(), DepthLimitedSearch(limit=3), UniformCost()]
+strategies = [AStar(map_problem), Greedy(map_problem), Random(), BreadthFirst(), DepthLimitedSearch(limit=5), UniformCost()]
+
 
 # search algorithm (Tree Search / Graph Search)
 for strategy in strategies:
@@ -25,17 +26,23 @@ for strategy in strategies:
     result, node = search.run()
     print(f'{strategy}, {search}')
     print(result)
-    print(node.path())
-    print(node.cost)
+    try:
+        print(node.path())
+        print(node.cost)
+    except AttributeError:
+        pass
 
 print("---------")
 
-strategies = [AStar(map_problem), Greedy(map_problem), Random(), BreadthFirst(), DepthFirst(), DepthLimitedSearch(limit=6), UniformCost()]
+strategies = [AStar(map_problem), Greedy(map_problem), Random(), BreadthFirst(), DepthFirst(), DepthLimitedSearch(limit=5), UniformCost()]
 for strategy in strategies:
     search = GraphSearch(problem=map_problem, strategy=strategy)
     result, node = search.run()
     print(f'{strategy}, {search}')
     print(result)
-    print(node.path())
-    print(node.cost)
+    try:
+        print(node.path())
+        print(node.cost)
+    except AttributeError:
+        pass
 

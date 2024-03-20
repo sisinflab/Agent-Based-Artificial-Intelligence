@@ -38,11 +38,19 @@ class TreeSearch:
                                      action=a,
                                      cost=self.problem.cost(node.state, a)) for s, a in new_states]
 
-            # a solution was not found, update the fringe and pick the next node coherently with the search strategy
-            self.fringe, node = self.strategy.select(self.fringe, new_nodes)
+            # update the fringe
+            self.fringe = self.fringe + new_nodes
 
-            # Check if the search fails (empty fringe)
-            if len(self.fringe) == 0:
+            # check if the search fails: empty fringe, unless the last node from the fringe contains the goal state
+            # if the fringe is not empty, we pop the next node from the fringe according to the strategy
+            if len(self.fringe) != 0:
+                self.fringe, node = self.strategy.select(self.fringe)
+                # check to manage if the fringe becomes empty within the strategy class (e.g., because of DepthLimited)
+                if node is None:
+                    return 'Fail', []
+            else:
                 if self.problem.goal_test(node.state):
                     return 'Ok', node
-                return 'Fail', []
+                else:
+                    return 'Fail', []
+

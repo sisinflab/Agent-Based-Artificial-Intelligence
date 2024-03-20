@@ -46,11 +46,17 @@ class GraphSearch:
             new_nodes = [n for n in new_nodes if n.state not in self.visited]
             self.fringe = [n for n in self.fringe if n.state not in self.visited]
 
-            # a solution was not found, update the fringe and pick the next node coherently with the search strategy
-            self.fringe, node = self.strategy.select(self.fringe, new_nodes)
+            self.fringe = self.fringe + new_nodes
 
-            # Check if the search fails (empty fringe)
-            if len(self.fringe) == 0:
+            if len(self.fringe) != 0:
+                self.fringe, node = self.strategy.select(self.fringe)
+                if node is None:
+                    return 'Fail', []
+            else:
                 if self.problem.goal_test(node.state):
                     return 'Ok', node
-                return 'Fail', []
+                else:
+                    return 'Fail', []
+
+
+

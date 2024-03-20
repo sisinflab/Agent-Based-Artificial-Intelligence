@@ -58,7 +58,7 @@ maze_problem = MazeProblem(environment=maze,
                            goal_state=goal_state)
 
 strategies = [AStar(maze_problem), Greedy(maze_problem), Random(), BreadthFirst(), DepthLimitedSearch(limit=3), UniformCost()]
-# strategies = []
+
 # search algorithm (Tree Search / Graph Search)
 for strategy in strategies:
     search = TreeSearch(problem=maze_problem, strategy=strategy)
@@ -75,7 +75,7 @@ for strategy in strategies:
 print("---------")
 
 strategies = [AStar(maze_problem), Greedy(maze_problem), Random(), BreadthFirst(), DepthFirst(), DepthLimitedSearch(limit=6), UniformCost()]
-# strategies = [DepthFirst()]
+
 for strategy in strategies:
     search = GraphSearch(problem=maze_problem, strategy=strategy)
     result, node = search.run()
