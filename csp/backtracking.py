@@ -162,3 +162,4 @@ class BackTracking:
 
         # if there is no possible value a failure
         return False
+
