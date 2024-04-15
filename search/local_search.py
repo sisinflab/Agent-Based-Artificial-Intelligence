@@ -8,6 +8,9 @@ class HillClimbing:
     def __init__(self, problem):
         self.problem = problem
 
+    def __repr__(self):
+        return 'Hill Climbing'
+
     def run(self):
         # initial node with initial state
         node = Node(state=self.problem.initial_state,
@@ -45,14 +48,17 @@ class SimulatedAnnealing:
         self.max_time = max_time
         self.lam = lam
 
+    def __repr__(self):
+        return 'Simulated Annealing'
+
     def linear_schedule(self, temp):
         return temp - self.lam
 
     def proportional_schedule(self, temp):
         return temp - self.lam * temp
 
-    def exponential_schedule(self, initial_temp, time):
-        return initial_temp * math.exp(-self.lam * time)
+    def exponential_schedule(self, temp, time):
+        return temp * math.exp(-self.lam * time)
 
     def run(self, initial_temp=100):
         # set time at the beginning of the search
@@ -85,7 +91,7 @@ class SimulatedAnnealing:
                                    action=selected_action,
                                    cost=1)
             # update temperature
-            temp = self.exponential_schedule(initial_temp, time)
+            temp = self.exponential_schedule(temp, time)
             # update time
             time += 1
 
@@ -102,6 +108,9 @@ class Genetic:
         self.couples = int(self.population / 2)
         self.p_mutation = p_mutation
         self.gene_pool = gene_pool
+
+    def __repr__(self):
+        return 'Genetic'
 
     def select(self, population):
         fitnesses = list(map(self.problem.value, population))
