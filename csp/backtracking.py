@@ -35,7 +35,7 @@ def degree_heuristic(problem, state):
     """
     return max(problem.assignable_variables(state), key=lambda v: problem.remaining_constraints(state, v))
 
-
+'''
 def random_assignment(problem, state, variable):
     """
     Return a random value to be assigned to the variable
@@ -57,6 +57,33 @@ def least_constraining_value(problem, state, variable):
     @return: a list of assignable values
     """
     assignable_values = problem.domains[variable]
+    return sorted(assignable_values,
+                  key=lambda v: -sum([len(problem.legal_moves(problem.assign(state, variable, v), var))
+                                      for var in problem.assignable_variables(problem.assign(state, variable, v))]))
+'''
+
+
+def random_assignment(problem, state, variable, domains):
+    """
+    Return a random value to be assigned to the variable
+    @param problem: a CSP problem
+    @param variable: a variable
+    @return: a value for the variable
+    """
+    possible_values = domains[variable]
+    random.shuffle(possible_values)
+    return possible_values
+
+
+def least_constraining_value(problem, state, variable, domains):
+    """
+    Given a variable, choose the least constraining value
+    @param problem: a CSP problem
+    @param state: a state
+    @param variable: an assignable variable
+    @return: a list of assignable values
+    """
+    assignable_values = domains[variable]
     return sorted(assignable_values,
                   key=lambda v: -sum([len(problem.legal_moves(problem.assign(state, variable, v), var))
                                       for var in problem.assignable_variables(problem.assign(state, variable, v))]))
@@ -87,7 +114,7 @@ class BackTracking:
             return False
 
         # order the values with a desired order
-        values = self.value_criterion(self.problem, state, variable)
+        values = self.value_criterion(self.problem, state, variable, self.problem.domains)
 
         # for all the values
         for value in values:
@@ -133,7 +160,7 @@ class BackTracking:
             return False
 
         # order the values with a desired order
-        values = self.value_criterion(self.problem, state, variable)
+        values = self.value_criterion(self.problem, state, variable, domains)
 
         # for all the values
         for value in values:
