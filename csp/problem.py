@@ -198,28 +198,4 @@ class Containers(CSP):
                             DifferentValues(['fz1', 'fs1']),
                             DifferentValues(['fz2', 'fs1']),
                             DifferentValues(['fz3', 'fs1']),
-                            DifferentValues(['f3', 't5']),
-                            DifferentValues(['f3', 't5']),
-                            DifferentValues(['f3', 't5']),
-                            DifferentValues(['f3', 't5']),
-                            DifferentValues(['f3', 't5']),
-                            DifferentValues(['WA', 'NT']),
                             MaximumCapacity(self.variables, 6)]
-'''
-class Containers(CSP):
-    def __init__(self):
-        self.variables = ['C1', 'C2', 'C3', 'C4']
-        self.values = ['t1', 't2', 't3', 't4', 't5', 'f1', 'f2', 'f3', 'e1', 'e2', 'fz1', 'fz2', 'fz3', 'fs1']
-        self.domains = {var: self.values for var in self.variables}
-        self.maxCapacity = 6
-        self.constraints = [MaximumCapacity('C1', self.maxCapacity),
-                            MaximumCapacity('C2', self.maxCapacity),
-                            MaximumCapacity('C3', self.maxCapacity),
-                            MaximumCapacity('C4', self.maxCapacity),
-                            UniqueValue('C1', ['e1', 'e2']),
-                            UniqueValue('C2', ['e1', 'e2']),
-                            UniqueValue('C3', ['e1', 'e2']),
-                            UniqueValue('C4', ['e1', 'e2']),
-                            
-                            ]
-'''
