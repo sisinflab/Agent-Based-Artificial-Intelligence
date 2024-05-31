@@ -54,6 +54,11 @@ class StreetProblem:
         return self.environment.distance(state, reached_state)
 
     def h(self, state):
+        """
+        Given a state returns the heuristic value of the state
+        :param state: a state
+        :return: the heuristic value of the state
+        """
         lat_a, long_a = self.environment.coordinates[state]
         lat_b, long_b = self.environment.coordinates[self.goal_state]
         lat_diff = abs(lat_a - lat_b) * 111  # <- *111 to just convert the latitude distance in KM.
@@ -145,7 +150,138 @@ class MazeProblem:
         return 1
 
     def h(self, state):
+        """
+        Given a state returns the heuristic value of the state
+        :param state: a state
+        :return: the heuristic value of the state
+        """
         return abs(self.goal_state[0] - state[0]) + abs(self.goal_state[1] - state[1])
+
+
+class HanoiTower:
+    def __init__(self, n, initial_state=None, goal_state=None):
+        self.n = n
+        if initial_state is None:
+            initial_state = [list(range(1, self.n + 1)), [], []]
+        if goal_state is None:
+            goal_state = [[], [], list(range(1, self.n + 1))]
+        self.initial_state = initial_state
+        self.goal_state = goal_state
+
+    def successors(self, state):
+        """
+        Given a state returns the reachable states with the respective actions
+        :param state: actual state
+        :return: list of successor states and actions
+        """
+        possible_actions = self.actions(state)
+        return [(self.result(state, a), a) for a in possible_actions]
+
+    def actions(self, state):
+        """
+        Given a state returns the list of possible actions
+        :param state: actual state
+        :return: a list of actions
+        """
+        possible_actions = ['Move from A to B', 'Move from A to C',
+                            'Move from B to A', 'Move from B to C',
+                            'Move from C to A', 'Move from C to B']
+        if len(state[0]) == 0:
+            possible_actions.remove('Move from A to B')
+            possible_actions.remove('Move from A to C')
+        else:
+            top_disk = state[0][0]
+            for i in range(0, len(state)):
+                if i != 0 and len(state[i]) != 0:
+                    if top_disk > state[i][0]:
+                        if i == 1:
+                            possible_actions.remove('Move from A to B')
+                        else:
+                            possible_actions.remove('Move from A to C')
+
+        if len(state[1]) == 0:
+            possible_actions.remove('Move from B to A')
+            possible_actions.remove('Move from B to C')
+        else:
+            top_disk = state[1][0]
+            for i in range(0, len(state)):
+                if i != 1 and len(state[i]) != 0:
+                    if top_disk > state[i][0]:
+                        if i == 0:
+                            possible_actions.remove('Move from B to A')
+                        else:
+                            possible_actions.remove('Move from B to C')
+
+        if len(state[2]) == 0:
+            possible_actions.remove('Move from C to B')
+            possible_actions.remove('Move from C to A')
+        else:
+            top_disk = state[2][0]
+            for i in range(0, len(state)):
+                if i != 2 and len(state[i]) != 0:
+                    if top_disk > state[i][0]:
+                        if i == 0:
+                            possible_actions.remove('Move from C to A')
+                        else:
+                            possible_actions.remove('Move from C to B')
+
+        return possible_actions
+
+    def result(self, state=None, action=None):
+        """
+        Given a state and an action returns the reached state
+        :param state: actual state
+        :param action: chosen action
+        :return: reached state
+        """
+        rod_1 = state[0].copy()
+        rod_2 = state[1].copy()
+        rod_3 = state[2].copy()
+        if action == 'Move from A to B':
+            disk = rod_1.pop(0)
+            rod_2.insert(0, disk)
+        if action == 'Move from A to C':
+            disk = rod_1.pop(0)
+            rod_3.insert(0, disk)
+        if action == 'Move from B to A':
+            disk = rod_2.pop(0)
+            rod_1.insert(0, disk)
+        if action == 'Move from B to C':
+            disk = rod_2.pop(0)
+            rod_3.insert(0, disk)
+        if action == 'Move from C to A':
+            disk = rod_3.pop(0)
+            rod_1.insert(0, disk)
+        if action == 'Move from C to B':
+            disk = rod_3.pop(0)
+            rod_2.insert(0, disk)
+
+        return [rod_1, rod_2, rod_3]
+
+    def goal_test(self, state):
+        """
+        Checks if the goal condition has been reached
+        :param state: actual state
+        :return: True if the goal condition is matched, False otherwise
+        """
+        return state == self.goal_state
+
+    def cost(self, state, action):
+        """
+        Returns the cost of an action. In this problem the cost is always unitary.
+        :param state: a state
+        :param action: an action
+        :return: a cost
+        """
+        return 1
+
+    def h(self, state):
+        """
+        Given a state returns the heuristic value of the state
+        :param state: a state
+        :return: the heuristic value of the state
+        """
+        return len(state[0]) + len(state[1])
 
 
 class EightQueensProblem:
