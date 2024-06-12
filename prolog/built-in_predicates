@@ -1,0 +1,720 @@
+<div class="notebook">
+
+<div class="nb-cell markdown" name="md1">
+# Built-in Predicates
+
+In the following some useful Prolog tools will be shown.
+Some of them cannot be implemented using classic Prolog rules, so we need to refer to built-in predicates.
+</div>
+
+<div class="nb-cell markdown" name="md10">
+## Input/Output
+
+These predicates helps us to write text in console and read text from it.
+</div>
+
+<div class="nb-cell markdown" name="md6">
+### Strings
+
+In Prolog we can use strings as in most programming languages.
+</div>
+
+<div class="nb-cell query" name="q11">
+X="Hello".
+</div>
+
+<div class="nb-cell markdown" name="md7">
+Be carefull with strings. If you want to manipulate them you have to use specific built-in predicates. For now, we are not interested in string manipulations.
+</div>
+
+<div class="nb-cell markdown" name="md2">
+### write/1
+The predicate *write* lets us write a term in console.
+</div>
+
+<div class="nb-cell query" name="q2">
+write(1).
+</div>
+
+<div class="nb-cell query" name="q3">
+write(hello).
+</div>
+
+<div class="nb-cell query" name="q4">
+X=hello, write(X).
+</div>
+
+<div class="nb-cell markdown" name="md3">
+Like any predicate it can be used also in our rules
+</div>
+
+<div class="nb-cell program" data-background="true" name="p1">
+pokemon(chikorita).
+pokemon(charmender).
+pokemon(squirtle).
+</div>
+
+<div class="nb-cell program" name="p2">
+write_a_pokemon():-
+    pokemon(X),
+    write(X).
+</div>
+
+<div class="nb-cell query" name="q5">
+write_a_pokemon.
+</div>
+
+<div class="nb-cell program" name="p3">
+write_a_list([]).
+write_a_list([H|T]) :-
+    write(H),
+    write_a_list(T).
+</div>
+
+<div class="nb-cell query" name="q1">
+write_a_list([1,2,3]).
+</div>
+
+<div class="nb-cell program" name="p4">
+write_pokemon_in_list([]).
+
+write_pokemon_in_list([H|T]) :-
+    pokemon(H),
+    write(H),
+    write_pokemon_in_list(T).
+
+write_pokemon_in_list([_|T]) :-
+    write_pokemon_in_list(T).
+</div>
+
+<div class="nb-cell query" name="q6">
+write_pokemon_in_list([1,2,3]).
+</div>
+
+<div class="nb-cell query" name="q7">
+write_pokemon_in_list([1,2,chikorita]).
+</div>
+
+<div class="nb-cell markdown" name="md4">
+What happens if the variable has *not* been already unified?
+</div>
+
+<div class="nb-cell query" name="q8">
+write(X), pokemon(X).
+</div>
+
+<div class="nb-cell program" name="p5">
+my_message():-
+    write("Ciao! Il mio pokemon preferito è: "),
+    pokemon(X),
+    write(X).
+</div>
+
+<div class="nb-cell query" name="q10">
+my_message.
+</div>
+
+<div class="nb-cell markdown" name="md5">
+### read/1
+
+This predicate allows to read terms from our system console.
+As write, it can be used within rule definitions.
+</div>
+
+<div class="nb-cell query" name="q9">
+read(X).
+</div>
+
+<div class="nb-cell program" name="p6">
+is_a_pokemon:-
+    write("Write the name of the pokemon"),
+    read(Pokemon),
+    pokemon(Pokemon),
+    write("Yes, "),
+    write(Pokemon),
+    write(" is a pokemon!").
+</div>
+
+<div class="nb-cell query" name="q12">
+is_a_pokemon.
+</div>
+
+<div class="nb-cell markdown" name="md8">
+## Text Separation
+
+### tab/1
+
+This predicate allows to write a certain number of tab symbols.
+</div>
+
+<div class="nb-cell query" name="q13">
+write(a), tab(1), write(b).
+</div>
+
+<div class="nb-cell query" name="q14">
+write(a), tab(3), write(b).
+</div>
+
+<div class="nb-cell program" name="p7">
+write_list([]).
+write_list([H|T]):-
+    write(H),
+    tab(1),
+    write_list(T).
+</div>
+
+<div class="nb-cell query" name="q15">
+write_list([a,b,c]).
+</div>
+
+<div class="nb-cell markdown" name="md9">
+### nl/0
+
+This predicate inserts a new line symbol.
+</div>
+
+<div class="nb-cell program" name="p8">
+write_columns([]).
+    
+write_columns([H|T]):-
+    write_symbols(H),
+    nl,
+    write_columns(T).
+
+write_symbols(0).
+write_symbols(N):-
+    write(#),
+    N1 is N-1,
+    write_symbols(N1).
+</div>
+
+<div class="nb-cell query" name="q16">
+write_columns([1,3,5,3,2,1]).
+</div>
+
+<div class="nb-cell markdown" name="md11">
+## Negation and Failure
+
+In Prolog a query is false if it is not able not find some facts in the KB that make that query true. 
+
+### not/1
+
+This predicate raises a failure if the argument, that must be a goal, is true.
+</div>
+
+<div class="nb-cell query" name="q17">
+not(X=1).
+</div>
+
+<div class="nb-cell markdown" name="md12">
+For example we can you this predicate for defining the concept of not be member of a list, by using the membership predicate.
+</div>
+
+<div class="nb-cell program" name="p9">
+member(X, [H|T]):-
+    X = H;
+    member(X, T).
+
+not_member(X, L):-
+    not(member(X, L)).
+</div>
+
+<div class="nb-cell query" name="q18">
+not_member(charmender, [1,2,3]).
+</div>
+
+<div class="nb-cell markdown" name="md13">
+### fail/0
+
+This predicate can be used Prolog search to fail. 
+We can be interested in making the search fail when a certain condition is met.
+
+We can use fail to define the concept of different terms. Two terms are different if they not unify.
+</div>
+
+<div class="nb-cell program" name="p10">
+different(A, B) :-
+    A=B, !,
+    fail;
+    true.
+</div>
+
+<div class="nb-cell query" name="q19">
+different(1,2).
+</div>
+
+<div class="nb-cell query" name="q20">
+different(X, Y).
+</div>
+
+<div class="nb-cell query" name="q21">
+different(a, a).
+</div>
+
+<div class="nb-cell query" name="q22">
+different(pokemon(charmender), pokemon(chikorita)).
+</div>
+
+<div class="nb-cell markdown" name="md15">
+*fail* può essere molto utile per stampare tutti gli elementi di una lista. Questo perché fail forza Prolog ad effettuare un backtracking per cercare un altro fatto o un altra regola che possano unificare con la query.
+</div>
+
+<div class="nb-cell program" name="p11">
+member(X, [H|T]):-
+    X = H;
+    member(X, T).
+
+write_list(L):-
+    member(X, L),
+    write(X),
+    nl,
+    fail;
+    true.
+</div>
+
+<div class="nb-cell query" name="q23">
+write_list([bulbasaur, charmender, squirtle]).
+</div>
+
+<div class="nb-cell markdown" name="md16">
+## Type Checking
+
+In Prolog we can check if a term is a variable or not, an atom, an integer, and so on.
+In particular we can use the following predicates:
+- var/1 is true if the argument is a varible
+- nonvar/1 is true if the argument is not a variable
+- atom/1 is true if the argument is an atom
+- integer/1 is true if the argument is an integer
+- float/1 is true if the argument is a float
+- number/1 is true if the argument is a number
+- atomic/1 is true if the argument is an atom OR an integer
+- compound/1 is true if the argument is a compound term
+</div>
+
+<div class="nb-cell query" name="q24">
+var(X).
+</div>
+
+<div class="nb-cell query" name="q25">
+var(hello).
+</div>
+
+<div class="nb-cell query" name="q26">
+nonvar(X).
+</div>
+
+<div class="nb-cell query" name="q27">
+nonvar(10).
+</div>
+
+<div class="nb-cell query" name="q28">
+atom(1).
+</div>
+
+<div class="nb-cell query" name="q29">
+atom(hello).
+</div>
+
+<div class="nb-cell query" name="q30">
+atomic(1).
+</div>
+
+<div class="nb-cell query" name="q31">
+compound(hello).
+</div>
+
+<div class="nb-cell query" name="q32">
+compound(pokemon(chikorita)).
+</div>
+
+<div class="nb-cell markdown" name="md17">
+For example, when summing the values within a list, before adding we can check if the list element is a number or not.
+</div>
+
+<div class="nb-cell program" name="p12">
+sum_list([X], X) :-
+    number(X).
+sum_list([H|T], Result) :-
+    number(H),
+    sum_list(T, Tail_sum),
+    Result is H + Tail_sum.
+</div>
+
+<div class="nb-cell query" name="q33">
+sum_list([1,2,3], Sum).
+</div>
+
+<div class="nb-cell query" name="q34">
+sum_list([1,2,3, a], Sum).
+</div>
+
+<div class="nb-cell query" name="q35">
+sum_list([charmender, 1,2,3], Sum).
+</div>
+
+<div class="nb-cell markdown" name="md18">
+## Equalities
+</div>
+
+<div class="nb-cell markdown" name="md19">
+In Prolog the concept of equality can be interpreted in three different ways:
+- two terms are equal because they unify
+- two terms are equal if they have the same value
+- two terms are equal if they have the same structure
+</div>
+
+<div class="nb-cell markdown" name="md20">
+If we want that two terms unify, we have to use the operator "=" (=/2).
+</div>
+
+<div class="nb-cell query" name="q38">
+X=Y.
+</div>
+
+<div class="nb-cell query" name="q37">
+X = pokemon(charmender).
+</div>
+
+<div class="nb-cell query" name="q39">
+pokemon(charmender) = pokemon(X).
+</div>
+
+<div class="nb-cell query" name="q40">
+1=1.
+</div>
+
+<div class="nb-cell program" name="p13">
+two_equal_pokemon(A, B) :-
+    pokemon(A),
+    A = B.
+</div>
+
+<div class="nb-cell query" name="q36">
+two_equal_pokemon(X, Y).
+</div>
+
+<div class="nb-cell markdown" name="md21">
+If we want that two terms must not only unify but also have the same arithmetic value we have to use "=:=" (=:=/2)
+</div>
+
+<div class="nb-cell query" name="q41">
+X=:=Y.
+</div>
+
+<div class="nb-cell query" name="q42">
+1=:=1.
+</div>
+
+<div class="nb-cell query" name="q43">
+X=10,
+Y=10,
+X=:=Y.
+</div>
+
+<div class="nb-cell query" name="q44">
+charmender =:= chikorita.
+</div>
+
+<div class="nb-cell markdown" name="md22">
+If we want that two terms must be identical, also in their structure, we have to use "==" (==/2).
+</div>
+
+<div class="nb-cell query" name="q45">
+1==1.
+</div>
+
+<div class="nb-cell query" name="q46">
+charmender==charmender.
+</div>
+
+<div class="nb-cell query" name="q47">
+pokemon(X)==pokemon(charmender).
+</div>
+
+<div class="nb-cell query" name="q48">
+pokemon(charmender)==pokemon(charmender).
+</div>
+
+<div class="nb-cell query" name="q49">
+X==Y.
+</div>
+
+<div class="nb-cell markdown" name="md23">
+The negation operators are respectively:
+- \=/2
+- =\=/2
+- \==/2
+</div>
+
+<div class="nb-cell query" name="q50">
+1 \= charmender.
+</div>
+
+<div class="nb-cell query" name="q51">
+pokemon(X) \= starter(X).
+</div>
+
+<div class="nb-cell query" name="q52">
+X=1,
+Y=2, 
+X =\= Y.
+</div>
+
+<div class="nb-cell query" name="q53">
+X=\=Y.
+</div>
+
+<div class="nb-cell query" name="q54">
+charmender =\= chikorita.
+</div>
+
+<div class="nb-cell query" name="q55">
+X \== Y.
+</div>
+
+<div class="nb-cell query" name="q56">
+pokemon(charmender) \== pokemon(X).
+</div>
+
+<div class="nb-cell markdown" name="md24">
+## Lists of elements that respect the same condition
+</div>
+
+<div class="nb-cell markdown" name="md25">
+### findall/3
+
+This predicate has three arguements: 
+- the *variable* that we want to collect in the list
+- the *condition* that the variable must verify
+- the *list* of elements that respect the condition
+</div>
+
+<div class="nb-cell markdown" name="md26">
+When using findall, all the goal variables that has not been selected in the first argument (called free variables) can unify with different values.
+We can imagine that findall unifies with the goal condition, then all the results produced forcing backtracking are inserted in the list.
+
+The results are reported *with repetition*.
+</div>
+
+<div class="nb-cell program" name="p15">
+% pokemon(name, type, power).
+pokemon(bulbasaur, grass, 318).
+pokemon(ivysaur, grass, 405).
+pokemon(venusaur, grass, 625).
+pokemon(charmander, fire, 309).
+pokemon(charmeleon, fire, 405).
+pokemon(charizard, fire, 634).
+pokemon(squirtle, water, 314).
+pokemon(wartortle, water, 405).
+pokemon(blastoise, water, 630).
+</div>
+
+<div class="nb-cell query" name="q60">
+findall(X, pokemon(X, _, _), Result).
+</div>
+
+<div class="nb-cell query" name="q61">
+findall(Type, pokemon(_, Type, _), Result).
+</div>
+
+<div class="nb-cell markdown" name="md27">
+### bagof/3
+
+It is similar to findall but here the free variables must unify in all the elements of the list.
+So the list is composed by the elements that unify with the goal also in the remaining variables.
+
+It produces lists *with repetead elements* if more elements of the same name matches.
+</div>
+
+<div class="nb-cell query" name="q57">
+bagof(X, pokemon(X, _, 405), L).
+</div>
+
+<div class="nb-cell markdown" name="md28">
+As we can see in the query above only one element is reported, and the backtracking returns three different lists. 
+
+This happens because there is only one pokemon with power 405 and the same type (only one fire, only one grass, only one water).
+</div>
+
+<div class="nb-cell program" name="p14">
+% pokemon(name, type, power).
+pokemon(bulbasaur, 318).
+pokemon(ivysaur, 405).
+pokemon(venusaur, 625).
+pokemon(charmander, 309).
+pokemon(charmeleon, 405).
+pokemon(charizard, 634).
+pokemon(squirtle, 314).
+pokemon(wartortle, 405).
+pokemon(blastoise, 630).
+</div>
+
+<div class="nb-cell query" name="q58">
+bagof(X, pokemon(X, 405), L).
+</div>
+
+<div class="nb-cell program" data-background="true" name="p16">
+% example from the textbook
+age(peter, 7).
+age(ann, 5).
+age(pat, 8).
+age(tom, 5).
+
+person_age(X) :-
+    age(_, X).
+</div>
+
+<div class="nb-cell query" name="q62">
+bagof(X, age(X, Age), L).
+</div>
+
+<div class="nb-cell query" name="q63">
+bagof(X, person_age(X), L).
+</div>
+
+<div class="nb-cell markdown" name="md29">
+### setof/3
+
+It works like bagof/3 but *without repetitions*.
+</div>
+
+<div class="nb-cell query" name="q64">
+setof(X, person_age(X), L).
+</div>
+
+<div class="nb-cell markdown" name="md14">
+## Cuts
+</div>
+
+<div class="nb-cell markdown" name="md30">
+As we are well aware, Prolog implements a search strategy based on depth-first exploration and utilizes backtracking to explore different branches of the SLD tree.
+
+When the search fails to find a solution for a particular sub-goal, i.e., to find a unification that makes it true, Prolog performs backtracking, which means returning to the previous sub-goal and attempting to unify it in a different way.
+
+Another scenario where backtracking can occur is when the user explicitly requests a new solution. For instance, if a Prolog program returns a solution but the user asks for additional solutions, Prolog will execute backtracking to search for other possible unifications that satisfy the goal.
+
+Therefore, Prolog typically finds itself needing to employ backtracking in two recurring situations:
+- Prolog *fails to unify* the sub-goal.
+- The user requests a *new solution*.
+</div>
+
+<div class="nb-cell markdown" name="md31">
+Since the state space can be very large, the strategy with which Prolog navigates within this space can make a difference between a solvable problem and a problem that fails due to excessive resource requirements. In particular, a depth-first search strategy has its limitations that, if controlled, can improve the effectiveness of exploration.
+</div>
+
+<div class="nb-cell markdown" name="md32">
+In Prolog we can control the backtracking and, as a consequence, the search strategy using the cut operator, denoted by the *exclamation mark (!)*.
+
+When Prolog encounters the cut operator during the evaluation of a goal, it commits to the choices made before the cut and prevents any backtracking beyond that point. This means that once a cut is reached, *Prolog will not attempt to explore alternative solutions for the goals that precede it*.
+</div>
+
+<div class="nb-cell markdown" name="md33">
+If our rule is defined by a sequence of subgoals, we can imagine that the cut operator freezes all the sub-goals before the cut, stopping them to search for a different unification. Regarding the following sub-goals, they are free to search for different solutions.
+</div>
+
+<div class="nb-cell markdown" name="md34">
+### Green Cuts and Red Cuts
+
+A cut can have a different impact on the Program:
+- it can just stop Prolog for searching new definitions of the same rule (green cut)
+- it can modify the meaning of some rules (red cut)
+</div>
+
+<div class="nb-cell markdown" name="md35">
+Let's see how with an example.
+
+### Green Cut Example
+
+Let's suppose that we want to implement the following rule: 
+- if the examination mark is *less than 18* the examination is failed
+- if the examination mark is greater than 18 but *less then 21* the examination is passed after passin an oral exam
+- if the examination mark is *greater than 21* examination is passed
+</div>
+
+<div class="nb-cell program" name="p17">
+exam(Mark, failed) :- Mark &lt; 18.
+exam(Mark, oral_exam) :- Mark &gt; 18, Mark &lt; 21.
+exam(Mark, passed) :- Mark &gt; 21.
+</div>
+
+<div class="nb-cell query" name="q59">
+exam(10, R1),
+exam(20, R2),
+exam(25, R3).
+</div>
+
+<div class="nb-cell markdown" name="md36">
+The rules work but there is no necessity in searching for a new solution, since there is no other valid solution for R1, R2 and R3 because the three scenarios are *mutually esclusive*.
+
+So we can fix this by adding the cut operator.
+</div>
+
+<div class="nb-cell program" name="p18">
+exam(Mark, failed) :- Mark =&lt; 17, !.
+exam(Mark, oral_exam) :- Mark &gt; 17, Mark &lt; 21, !.
+exam(Mark, passed) :- Mark &gt;= 21, !.
+</div>
+
+<div class="nb-cell query" name="q65">
+exam(10, R1),
+exam(20, R2),
+exam(25, R3).
+</div>
+
+<div class="nb-cell markdown" name="md37">
+Introducing the cuts we have prevented useless backtracking. Let's check if it works also when asking different questions as "have I passed the exam with a 10 mark?". The answer is correctly false.
+</div>
+
+<div class="nb-cell query" name="q66">
+exam(10, failed).
+</div>
+
+<div class="nb-cell query" name="q67">
+exam(10, passed).
+</div>
+
+<div class="nb-cell markdown" name="md38">
+### Red Cut Example
+</div>
+
+<div class="nb-cell markdown" name="md39">
+If we look carefully at our program we can see that, when I ask Prolog if I have passed the exam, it firstly tries to unify with the first rule, then tries the others.
+So, the second rule is checked only if the mark is grater that 18. So we can make our code faster removing useless conditions.
+</div>
+
+<div class="nb-cell program" name="p19">
+exam(Mark, failed) :- Mark =&lt; 17, !.
+exam(Mark, oral_exam) :- Mark &lt; 21, !.
+exam(_, passed).
+</div>
+
+<div class="nb-cell query" name="q68">
+exam(10, R1),
+exam(20, R2),
+exam(25, R3).
+</div>
+
+<div class="nb-cell markdown" name="md40">
+We can interpret our new implementation as:
+- *if* the mark is less than 18 the exam is failed, 
+- *else*, *if* the mark is less than 21 you have to pass the oral examination,
+- *else* you passed the exam.
+</div>
+
+<div class="nb-cell markdown" name="md41">
+As you can see, we have forced the procedural meaning of Prolog rules. But what happens if ...
+</div>
+
+<div class="nb-cell query" name="q69">
+exam(10, passed).
+</div>
+
+<div class="nb-cell markdown" name="md42">
+Oh, no! It seems that a student can pass the examination with a 10 mark! 
+
+This happens when cut changes the *meaning of the rules* and, as a consequence, of the program. This kind of cut is called *red cut*.
+
+Be carefull when introducing cuts. In this case the rule works only if *used as we expect* but it is not always true. So it is better to avoid red cuts.
+</div>
+
+</div>
